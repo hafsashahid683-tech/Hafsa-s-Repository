@@ -1,0 +1,95 @@
+import random
+
+
+def display_word(secret_word, guessed_letters):
+    """Display guessed letters and hide the remaining letters."""
+    return " ".join(
+        letter if letter in guessed_letters else "_"
+        for letter in secret_word
+    )
+
+
+def play_hangman():
+    """Run one complete round of Hangman."""
+
+    # A small list of predefined words
+    words = ["python", "computer", "programming", "developer", "database"]
+
+    # Select a random word
+    secret_word = random.choice(words)
+
+    # Store the letters guessed by the player
+    guessed_letters = set()
+
+    # Maximum number of incorrect guesses
+    max_incorrect_guesses = 6
+    incorrect_guesses = 0
+
+    print("\n" + "=" * 40)
+    print("        WELCOME TO HANGMAN")
+    print("=" * 40)
+    print("Guess the word one letter at a time.")
+    print(f"You have {max_incorrect_guesses} incorrect guesses.\n")
+
+    # Continue until the player wins or loses
+    while incorrect_guesses < max_incorrect_guesses:
+
+        # Display the current progress
+        print("Word:", display_word(secret_word, guessed_letters))
+        print("Incorrect guesses:",
+              f"{incorrect_guesses}/{max_incorrect_guesses}")
+
+        # Get input from the player
+        guess = input("Enter a letter: ").strip().lower()
+
+        # Validate the input
+        if len(guess) != 1 or not guess.isalpha():
+            print("Please enter exactly one alphabetic letter.\n")
+            continue
+
+        # Check whether the letter was already guessed
+        if guess in guessed_letters:
+            print("You already guessed that letter. Try another one.\n")
+            continue
+
+        # Save the valid guess
+        guessed_letters.add(guess)
+
+        # Check whether the guess is correct
+        if guess in secret_word:
+            print("Correct guess!\n")
+        else:
+            incorrect_guesses += 1
+            print("Incorrect guess!\n")
+
+        # Check whether all letters have been guessed
+        if all(letter in guessed_letters for letter in secret_word):
+            print("Word:", display_word(secret_word, guessed_letters))
+            print("\nCongratulations! You guessed the word!")
+            return
+
+    # The player has used all incorrect guesses
+    print("Word:", secret_word)
+    print("\nGame over! You ran out of incorrect guesses.")
+
+
+def main():
+    """Start the Hangman game."""
+
+    play_hangman()
+
+    # Ask whether the player wants to play again
+    while True:
+        play_again = input("\nWould you like to play again? (yes/no): ").strip().lower()
+
+        if play_again == "yes":
+            play_hangman()
+        elif play_again == "no":
+            print("\nThank you for playing Hangman!")
+            break
+        else:
+            print("Please enter yes or no.")
+
+
+if __name__ == "__main__":
+    main()
